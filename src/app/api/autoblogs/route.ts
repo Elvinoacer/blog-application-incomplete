@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma'; // Using the singleton prisma instance
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const take = searchParams.get('take') ? parseInt(searchParams.get('take')!, 10) : undefined;
+  const take = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : undefined;
   const skip = searchParams.get('skip') ? parseInt(searchParams.get('skip')!, 10) : undefined;
 
   try {
