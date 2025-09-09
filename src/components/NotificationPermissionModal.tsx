@@ -1,0 +1,91 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { getFCMToken } from '@/lib/firebase';
+
+export default function NotificationPermissionModal() {
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        setShowModal(true);
+      }
+    }
+  }, []);
+
+  const handleAllow = async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      setStatus('Push notifications not supported');
+      return;
+    }
+
+    try {
+      await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setStatus('Permission denied');
+        setShowModal(false);
+        return;
+      }
+
+      const token = await getFCMToken();
+      if (!token) {
+        setStatus('Failed to get token');
+        setShowModal(false);
+        return;
+      }
+
+      const res = await fetch('/api/register-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+
+      if (res.ok) {
+        setStatus('Subscribed successfully!');
+        setShowModal(false);
+      } else {
+        setStatus('Failed to register token');
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus('Error subscribing');
+      setShowModal(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
+  if (!showModal) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4">Enable Notifications</h2>
+        <p className="mb-6">Stay up to date with the latest articles and news. Allow notifications to get real-time updates.</p>
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={handleCancel}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleAllow}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Allow
+          </button>
+        </div>
+        {status && <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">{status}</p>}
+      </div>
+    </div>
+  );
+}

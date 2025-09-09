@@ -1,11 +1,60 @@
 import { AllArticlesPage } from "@/components/articles/all-articles-page";
 import ArticleSearchInput from "@/components/articles/article-search-input";
+import FeaturedArticleCard from "@/components/home/featured-article-card";
 import { Button } from "@/components/ui/button";
 import React, { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
+
+// Define the type for the autoblog data
+interface Autoblog {
+  id: string;
+  topic: string;
+  images: { url: string; description: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Async component to fetch and render all autoblogs
+async function AutoblogsSection() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/autoblogs`,
+      {
+        next: { revalidate: 3600 }, // Revalidate every hour
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch autoblogs");
+      return (
+        <p className="text-center text-red-500">Failed to load articles.</p>
+      );
+    }
+
+    const autoblogs: Autoblog[] = await res.json();
+
+    return (
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {autoblogs.map((blog) => (
+          <FeaturedArticleCard
+            key={blog.id}
+            id={blog.id}
+            topic={blog.topic}
+            imageUrl={
+              blog.images && blog.images.length > 0 ? blog.images[0].url : null
+            }
+          />
+        ))}
+      </div>
+    );
+  } catch (error) {
+    console.error("Error fetching autoblogs:", error);
+    return <p className="text-center text-red-500">Error loading articles.</p>;
+  }
+}
 
 type SearchPageProps = {
   searchParams: { search?: string; page?: string };
@@ -28,14 +77,28 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
         {/* Page Header */}
         <div className="mb-12 space-y-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            All Articles
+            Our Articles
           </h1>
           {/* Search Bar */}
           <Suspense>
             <ArticleSearchInput />
           </Suspense>
         </div>
+
+        {/* Autoblogs Section */}
+        <section className="mb-16">
+          <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+            From the AI
+          </h2>
+          <Suspense fallback={<AllArticlesPageSkeleton />}>
+            <AutoblogsSection />
+          </Suspense>
+        </section>
+
         {/* All article page  */}
+        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+          All Articles
+        </h2>
         <Suspense fallback={<AllArticlesPageSkeleton />}>
           <AllArticlesPage articles={articles} />
         </Suspense>

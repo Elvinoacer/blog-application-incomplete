@@ -54,6 +54,7 @@ export default function RootLayout({
               <FooterWrapper />
             </div>
             <CookieConsentBanner />
+            <NotificationPermissionModal />
           </ThemeProvider>
         </body>
       </html>

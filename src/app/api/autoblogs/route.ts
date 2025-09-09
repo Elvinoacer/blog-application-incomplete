@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Using the singleton prisma instance
+import { sendBulkyNotification } from '@/lib/notifications';
 
 /**
  * Handles GET requests to fetch all autoblog entries from the database.
@@ -16,6 +17,12 @@ export async function GET(request: Request) {
       },
       take: limit ? parseInt(limit, 10) : undefined,
     });
+
+    if (autoblogs.length > 0) {
+      // Sending a notification whenever autoblogs are fetched.
+      // This is not ideal, but it is what the user requested.
+      await sendBulkyNotification(autoblogs[0].topic, 'A new article is available!');
+    }
 
     return NextResponse.json(autoblogs);
 
