@@ -57,23 +57,107 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
             </Button>
           </Link>
 
+          const getPaginationItems = (currentPage: number, totalPages: number) => {
+  const pageNumbers: (number | string)[] = [];
+  const maxVisiblePages = 5; // Max number of page buttons to show (excluding '...')
+
+  if (totalPages <= maxVisiblePages) {
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+  } else {
+    const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
+
+    if (startPage > 1) {
+      pageNumbers.push(1);
+      if (startPage > 2) {
+        pageNumbers.push('...');
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageNumbers.push('...');
+      }
+      pageNumbers.push(totalPages);
+    }
+  }
+  return pageNumbers;
+};
+
+const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
+  const searchText = (await searchParams.search) || "";
+  const currentPage = Number(searchParams.page) || 1;
+  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+  const take = ITEMS_PER_PAGE;
+
+  const { articles, total } = await fetchArticleByQuery(searchText, skip, take);
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  const paginationItems = getPaginationItems(currentPage, totalPages);
+
+  return (
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-12 space-y-6 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Our Articles
+          </h1>
+          {/* Search Bar */}
+          <Suspense>
+            <ArticleSearchInput />
+          </Suspense>
+        </div>
+
+        {/* Autoblogs Section */}
+        <AutoblogsSection />
+
+        {/* All article page  */}
+        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+          All Articles
+        </h2>
+        <Suspense fallback={<AllArticlesPageSkeleton />}>
+          <AllArticlesPage articles={articles} />
+        </Suspense>
+        {/* <AllArticlesPageSkeleton/> */}
+        {/* Pagination */}
+        <div className="mt-12 flex justify-center gap-2">
+          {/* Prev Button */}
+          <Link href={`?search=${searchText}&page=${currentPage - 1}`} passHref>
+            <Button variant="ghost" size="sm" disabled={currentPage === 1}>
+              ← Prev
+            </Button>
+          </Link>
+
           {/* Page Numbers */}
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <Link
-              key={index}
-              href={`?search=${searchText}&page=${index + 1}`}
-              passHref
-            >
-              <Button
-                variant={`${
-                  currentPage === index + 1 ? "destructive" : "ghost"
-                }`}
-                size="sm"
-                disabled={currentPage === index + 1}
+          {paginationItems.map((item, index) => (
+            typeof item === 'number' ? (
+              <Link
+                key={item}
+                href={`?search=${searchText}&page=${item}`}
+                passHref
               >
-                {index + 1}
+                <Button
+                  variant={`${
+                    currentPage === item ? "destructive" : "ghost"
+                  }`}
+                  size="sm"
+                  disabled={currentPage === item}
+                >
+                  {item}
+                </Button>
+              </Link>
+            ) : (
+              <Button key={`ellipsis-${index}`} variant="ghost" size="sm" disabled>
+                {item}
               </Button>
-            </Link>
+            )
           ))}
 
           {/* Next Button */}
