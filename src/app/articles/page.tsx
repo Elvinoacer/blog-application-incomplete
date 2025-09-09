@@ -72,8 +72,7 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
           </Suspense>
         </div>
 
-        {/* Autoblogs Section */}
-        <AutoblogsSection />
+        
 
         {/* All article page  */}
         <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
