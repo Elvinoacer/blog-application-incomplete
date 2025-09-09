@@ -14,50 +14,7 @@ type SearchPageProps = {
 
 const ITEMS_PER_PAGE = 3; // Number of items per page
 
-const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
-  const searchText = (await searchParams.search) || "";
-  const currentPage = Number(searchParams.page) || 1;
-  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-  const take = ITEMS_PER_PAGE;
-
-  const { articles, total } = await fetchArticleByQuery(searchText, skip, take);
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
-
-  return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-12 space-y-6 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Our Articles
-          </h1>
-          {/* Search Bar */}
-          <Suspense>
-            <ArticleSearchInput />
-          </Suspense>
-        </div>
-
-        {/* Autoblogs Section */}
-        <AutoblogsSection />
-
-        {/* All article page  */}
-        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-          All Articles
-        </h2>
-        <Suspense fallback={<AllArticlesPageSkeleton />}>
-          <AllArticlesPage articles={articles} />
-        </Suspense>
-        {/* <AllArticlesPageSkeleton/> */}
-        {/* Pagination */}
-        <div className="mt-12 flex justify-center gap-2">
-          {/* Prev Button */}
-          <Link href={`?search=${searchText}&page=${currentPage - 1}`} passHref>
-            <Button variant="ghost" size="sm" disabled={currentPage === 1}>
-              ← Prev
-            </Button>
-          </Link>
-
-          const getPaginationItems = (currentPage: number, totalPages: number) => {
+const getPaginationItems = (currentPage: number, totalPages: number) => {
   const pageNumbers: (number | string)[] = [];
   const maxVisiblePages = 5; // Max number of page buttons to show (excluding '...')
 
@@ -136,7 +93,7 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
           </Link>
 
           {/* Page Numbers */}
-          {paginationItems.map((item, index) => (
+          {paginationItems.map((item, index) =>
             typeof item === 'number' ? (
               <Link
                 key={item}
@@ -158,7 +115,7 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
                 {item}
               </Button>
             )
-          ))}
+          )}
 
           {/* Next Button */}
           <Link href={`?search=${searchText}&page=${currentPage + 1}`} passHref>
