@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Using the singleton prisma instance
-import { sendBulkyNotification } from '@/lib/notifications';
 
 /**
  * Handles GET requests to fetch all autoblog entries from the database.
@@ -8,23 +7,21 @@ import { sendBulkyNotification } from '@/lib/notifications';
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const limit = searchParams.get('limit');
+  const take = searchParams.get('take') ? parseInt(searchParams.get('take')!, 10) : undefined;
+  const skip = searchParams.get('skip') ? parseInt(searchParams.get('skip')!, 10) : undefined;
 
   try {
     const autoblogs = await prisma.autoblog.findMany({
       orderBy: {
         createdAt: 'desc',
       },
-      take: limit ? parseInt(limit, 10) : undefined,
+      take,
+      skip,
     });
 
-    if (autoblogs.length > 0) {
-      // Sending a notification whenever autoblogs are fetched.
-      // This is not ideal, but it is what the user requested.
-      await sendBulkyNotification(autoblogs[0].topic, 'A new article is available!');
-    }
+    const total = await prisma.autoblog.count();
 
-    return NextResponse.json(autoblogs);
+    return NextResponse.json({ autoblogs, total });
 
   } catch (error) {
     console.error('Failed to fetch autoblogs:', error);
