@@ -1,10 +1,9 @@
+"use client";
 
-'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import FeaturedArticleCard from "@/components/home/featured-article-card";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
+import Link from "next/link";
 
 // Define the type for the autoblog data
 interface Autoblog {
@@ -40,9 +39,6 @@ export function AutoblogsSection() {
 
   return (
     <section className="mb-16">
-      <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-        From the AI
-      </h2>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {autoblogs.map((blog) => (
           <FeaturedArticleCard
@@ -58,25 +54,35 @@ export function AutoblogsSection() {
       {/* Pagination */}
       <div className="mt-12 flex justify-center gap-2">
         {/* Prev Button */}
-        <Button variant="ghost" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
           ← Prev
         </Button>
 
         {/* Page Numbers */}
         {Array.from({ length: totalPages }).map((_, index) => (
-            <Button
-              key={index}
-              variant={`${currentPage === index + 1 ? "destructive" : "ghost"}`}
-              size="sm"
-              disabled={currentPage === index + 1}
-              onClick={() => setCurrentPage(index + 1)}
-            >
-              {index + 1}
-            </Button>
+          <Button
+            key={index}
+            variant={`${currentPage === index + 1 ? "destructive" : "ghost"}`}
+            size="sm"
+            disabled={currentPage === index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </Button>
         ))}
 
         {/* Next Button */}
-        <Button variant="ghost" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
           Next →
         </Button>
       </div>
