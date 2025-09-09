@@ -120,6 +120,10 @@ export default async function AutoblogPage({ params }: { params: { id: string } 
 
   // Inject the related articles HTML just before the closing body tag of the main report
   const finalHtml = mainHtml.replace(
+    '</head>',
+    `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9720412346327825"
+     crossorigin="anonymous"></script></head>`
+  ).replace(
     '</body>',
     `${relatedArticlesHtml}</body>`
   );
