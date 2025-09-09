@@ -87,9 +87,6 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
 
         {/* Autoblogs Section */}
         <section className="mb-16">
-          <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-            From the AI
-          </h2>
           <Suspense fallback={<AllArticlesPageSkeleton />}>
             <AutoblogsSection />
           </Suspense>
@@ -111,25 +108,6 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
               ← Prev
             </Button>
           </Link>
-
-          {/* Page Numbers */}
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <Link
-              key={index}
-              href={`?search=${searchText}&page=${index + 1}`}
-              passHref
-            >
-              <Button
-                variant={`${
-                  currentPage === index + 1 ? "destructive" : "ghost"
-                }`}
-                size="sm"
-                disabled={currentPage === index + 1}
-              >
-                {index + 1}
-              </Button>
-            </Link>
-          ))}
 
           {/* Next Button */}
           <Link href={`?search=${searchText}&page=${currentPage + 1}`} passHref>
