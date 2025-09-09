@@ -1,5 +1,6 @@
 // app/layout.tsx
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+import NotificationPermissionModal from "@/components/NotificationPermissionModal";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
