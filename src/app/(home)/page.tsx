@@ -18,7 +18,7 @@ async function FeaturedAutoblogs() {
   try {
     // Fetch the 3 latest autoblogs
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/autoblogs?limit=3`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/autoblogs?limit=3&${new Date().getTime()}`,
       {
         next: { revalidate: 3600 }, // Revalidate every hour
       }
