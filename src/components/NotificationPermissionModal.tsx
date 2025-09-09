@@ -16,6 +16,7 @@ export default function NotificationPermissionModal() {
   }, []);
 
   const handleAllow = async () => {
+    console.log('handleAllow called');
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       setStatus('Push notifications not supported');
       return;
@@ -23,7 +24,9 @@ export default function NotificationPermissionModal() {
 
     try {
       await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service worker registered');
       const permission = await Notification.requestPermission();
+      console.log('Notification permission:', permission);
       if (permission !== 'granted') {
         setStatus('Permission denied');
         setShowModal(false);
@@ -31,6 +34,7 @@ export default function NotificationPermissionModal() {
       }
 
       const token = await getFCMToken();
+      console.log('FCM token:', token);
       if (!token) {
         setStatus('Failed to get token');
         setShowModal(false);
@@ -42,6 +46,7 @@ export default function NotificationPermissionModal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
+      console.log('Register token response:', res);
 
       if (res.ok) {
         setStatus('Subscribed successfully!');
