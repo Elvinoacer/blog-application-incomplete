@@ -99,7 +99,7 @@ const generateReport = async () => {
             videos: reportData.videos || [],
           },
         });
-        fs.writeFileSync("data.json", JSON.stringify(rawData, null, 2));
+        
         console.log(
           `Successfully saved report for topic "${data.topic}" to the database.`
         );
