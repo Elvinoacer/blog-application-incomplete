@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 export const fetchArticleByQuery = async (searchText: string, skip: number, take: number) => {
-  const [articles, total] = await prisma.$transaction([
+  const [articles, autoblogs, totalArticles, totalAutoblogs] = await prisma.$transaction([
     prisma.articles.findMany({
       where: {
         OR: [
@@ -17,6 +17,16 @@ export const fetchArticleByQuery = async (searchText: string, skip: number, take
       skip: skip,
       take: take,
     }),
+    prisma.autoblog.findMany({
+      where: {
+        OR: [
+          { topic: { contains: searchText, mode: 'insensitive' } },
+          { detailedReport: { contains: searchText, mode: 'insensitive' } },
+        ],
+      },
+      skip: skip,
+      take: take,
+    }),
     prisma.articles.count({
       where: {
         OR: [
@@ -25,7 +35,20 @@ export const fetchArticleByQuery = async (searchText: string, skip: number, take
         ],
       },
     }),
+    prisma.autoblog.count({
+      where: {
+        OR: [
+          { topic: { contains: searchText, mode: 'insensitive' } },
+          { detailedReport: { contains: searchText, mode: 'insensitive' } },
+        ],
+      },
+    }),
   ]);
 
-  return { articles, total };
+  const results = [
+    ...articles.map(article => ({ ...article, type: 'article' })),
+    ...autoblogs.map(autoblog => ({ ...autoblog, type: 'autoblog' }))
+  ];
+
+  return { articles: results, total: totalArticles + totalAutoblogs };
 };
