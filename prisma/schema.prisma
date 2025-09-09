@@ -59,3 +59,14 @@ enum ROLES {
   AUTHOR
   SUPERADMIN
 }
+
+model Autoblog {
+  id             String   @id @default(cuid())
+  topic          String
+  detailedReport String   @db.Text
+  links          Json
+  images         Json
+  videos         Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

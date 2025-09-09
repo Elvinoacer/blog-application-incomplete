@@ -1,8 +1,57 @@
 import HeroSection from "@/components/home/hero-section";
-import { TopArticles } from "@/components/home/top-articles";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { Suspense } from "react";
+import FeaturedArticleCard from "@/components/home/featured-article-card";
+
+// Define the type for the autoblog data
+interface Autoblog {
+  id: string;
+  topic: string;
+  images: { url: string; description: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Async component to fetch and render featured autoblogs
+async function FeaturedAutoblogs() {
+  try {
+    // Fetch the 3 latest autoblogs
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/autoblogs?limit=3`,
+      {
+        next: { revalidate: 3600 }, // Revalidate every hour
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch autoblogs");
+      return (
+        <p className="text-center text-red-500">Failed to load articles.</p>
+      );
+    }
+
+    const autoblogs: Autoblog[] = await res.json();
+
+    return (
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {autoblogs.map((blog) => (
+          <FeaturedArticleCard
+            key={blog.id}
+            id={blog.id}
+            topic={blog.topic}
+            imageUrl={
+              blog.images && blog.images.length > 0 ? blog.images[0].url : null
+            }
+          />
+        ))}
+      </div>
+    );
+  } catch (error) {
+    console.error("Error fetching autoblogs:", error);
+    return <p className="text-center text-red-500">Error loading articles.</p>;
+  }
+}
 
 const page = async () => {
   return (
@@ -19,9 +68,11 @@ const page = async () => {
             </p>
           </div>
 
-          {/* Top Articles */}
-          <Suspense fallback={<h1>Loading....</h1>}>
-            <TopArticles />
+          {/* New Featured Autoblogs Section */}
+          <Suspense
+            fallback={<p className="text-center">Loading articles...</p>}
+          >
+            <FeaturedAutoblogs />
           </Suspense>
 
           <div className="mt-12 text-center">
