@@ -20,7 +20,7 @@ async function FeaturedAutoblogs() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/autoblogs?limit=3&${new Date().getTime()}`,
       {
-        next: { revalidate: 3600 }, // Revalidate every hour
+        cache: 'no-store',
       }
     );
 
@@ -35,7 +35,7 @@ async function FeaturedAutoblogs() {
     const autoblogs: Autoblog[] = data.autoblogs;
 
     return (
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {autoblogs.map((blog) => (
           <FeaturedArticleCard
             key={blog.id}
