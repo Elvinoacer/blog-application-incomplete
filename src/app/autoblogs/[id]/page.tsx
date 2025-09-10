@@ -1,6 +1,44 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { generateTechReportHTML } from '@/lib/htmlv2';
+import { Metadata, ResolvingMetadata } from 'next';
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const id = params.id;
+  const autoblog = await prisma.autoblog.findUnique({
+    where: { id },
+  });
+
+  if (!autoblog) {
+    return {
+      title: "Not Found",
+      description: "The page you are looking for does not exist.",
+    };
+  }
+
+  const imageUrl = (autoblog.images && Array.isArray(autoblog.images) && autoblog.images.length > 0)
+    ? (autoblog.images[0] as any).url
+    : 'https://images.unsplash.com/photo-1585079374502-431f8a3c9338?q=80&w=2070&auto=format&fit=crop';
+
+  const description = autoblog.detailedReport.substring(0, 150).replace(/[#*`/]/g, '');
+
+  return {
+    title: autoblog.topic,
+    description: description,
+    openGraph: {
+      title: autoblog.topic,
+      description: description,
+      images: [imageUrl],
+    },
+  };
+}
 
 // This helper function generates the raw HTML for the related articles section.
 // It includes its own styling to be injected alongside the main report HTML.
