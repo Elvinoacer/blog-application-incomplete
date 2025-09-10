@@ -90,7 +90,7 @@ const generateReport = async () => {
           : [];
         images.unshift({ url: imageUrl, description: "Featured Image" });
 
-        await prisma.autoblog.create({
+        const newAutoblog = await prisma.autoblog.create({
           data: {
             topic: data.topic,
             detailedReport: reportData.detailedReport || "",
@@ -103,7 +103,7 @@ const generateReport = async () => {
         console.log(
           `Successfully saved report for topic "${data.topic}" to the database.`
         );
-        return; // Exit successfully
+        return newAutoblog; // Exit successfully
       } catch (e) {
         console.error(
           "Error processing data or creating autoblog. Retrying...",

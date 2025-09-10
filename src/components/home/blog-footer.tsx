@@ -3,8 +3,42 @@ import { Input } from "@/components/ui/input";
 import { Mail } from "lucide-react";
 import { Linkedin, Github, Twitter } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export function BlogFooter() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage("");
+
+    if (!email) {
+      setMessage("Email is required");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        setMessage("Thank you for subscribing!");
+        setEmail("");
+      } else {
+        const errorData = await res.json();
+        setMessage(errorData.message || "Something went wrong");
+      }
+    } catch (error) {
+      setMessage("Something went wrong");
+    }
+  };
+
   return (
     <footer className="border-t bg-background">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
@@ -118,11 +152,13 @@ export function BlogFooter() {
             <h3 className="text-lg font-semibold text-foreground">
               Stay Updated
             </h3>
-            <form className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="relative">
                 <Input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 pr-4 py-6"
                 />
                 <Mail className="h-5 w-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
@@ -130,6 +166,7 @@ export function BlogFooter() {
               <Button type="submit" className="w-full">
                 Subscribe
               </Button>
+              {message && <p className="text-sm text-center text-muted-foreground">{message}</p>}
             </form>
           </div>
         </div>
