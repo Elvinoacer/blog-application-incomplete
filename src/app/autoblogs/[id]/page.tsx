@@ -125,6 +125,8 @@ const generateRelatedArticlesHTML = (articles: any[]) => {
   `;
 };
 
+import AutoblogViewTracker from '@/components/autoblogs/autoblog-view-tracker';
+
 export default async function AutoblogPage({ params }: { params: { id: string } }) {
   
   const [autoblog, relatedArticles] = await Promise.all([
@@ -167,6 +169,9 @@ export default async function AutoblogPage({ params }: { params: { id: string } 
   );
 
   return (
-    <div dangerouslySetInnerHTML={{ __html: finalHtml }} />
+    <>
+      <AutoblogViewTracker autoblogId={autoblog.id} />
+      <div dangerouslySetInnerHTML={{ __html: finalHtml }} />
+    </>
   );
 }
