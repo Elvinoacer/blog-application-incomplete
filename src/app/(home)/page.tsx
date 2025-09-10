@@ -42,6 +42,10 @@ async function FeaturedAutoblogs() {
     const data = await res.json();
     const autoblogs: Autoblog[] = data.autoblogs;
 
+    const stripMarkdown = (markdown: string) => {
+      return markdown.replace(/[#*`/]/g, '');
+    }
+
     return (
       <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
         {autoblogs.map((blog) => (
@@ -52,7 +56,7 @@ async function FeaturedAutoblogs() {
             imageUrl={
               blog.images && blog.images.length > 0 ? blog.images[0].url : null
             }
-            description={blog.detailedReport.substring(0, 100)}
+            description={stripMarkdown(blog.detailedReport.substring(0, 100))}
             content={blog.detailedReport}
           />
         ))}
