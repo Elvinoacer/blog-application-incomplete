@@ -27,10 +27,20 @@ export async function GET() {
 
       if (subscribers.length > 0) {
         const emailSubject = `New Blog Post: ${newBlog.topic}`;
+        const description = newBlog.detailedReport.split('\n')[0];
+        const imageUrl = newBlog.images[0]?.url;
+
         const emailHtml = `
-          <h1>${newBlog.topic}</h1>
-          <p>A new blog post has been published on our website.</p>
-          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/autoblogs/${newBlog.id}">Read it here</a>
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="padding: 20px; text-align: center; background-color: #f7f7f7;">
+              <h1 style="color: #333;">${newBlog.topic}</h1>
+            </div>
+            ${imageUrl ? `<img src="${imageUrl}" alt="${newBlog.topic}" style="width: 100%;">` : ''}
+            <div style="padding: 20px;">
+              <p style="font-size: 16px; color: #555;">${description}</p>
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/autoblogs/${newBlog.id}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 20px;">Read More</a>
+            </div>
+          </div>
         `;
 
         for (const subscriber of subscribers) {
