@@ -80,3 +80,19 @@ model Subscriber {
   id    String  @id @default(cuid())
   email String  @unique
 }
+
+model Visitor {
+  id             String    @id @default(cuid())
+  visitorId      String    @unique
+  isFirstVisit   Boolean
+  firstVisitDate DateTime
+  lastVisitDate  DateTime
+  visitCount     Int
+  country        String?
+  countryCode    String?
+  pageViews      Json?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  articleId      String?
+  autoblogId     String?
+}

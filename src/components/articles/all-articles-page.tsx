@@ -12,6 +12,14 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
 
   if (articles.length === 0) return <NoSearchResults />;
 
+  const calculateReadingTime = (text: string) => {
+    const wordsPerMinute = 200;
+    const noWords = text.split(/\s/g).length;
+    const minutes = noWords / wordsPerMinute;
+    const readTime = Math.ceil(minutes);
+    return `${readTime} min read`;
+  };
+
   return (
     <div className="grid gap-6 sm:gap-8">
       {articles.map((result) => {
@@ -46,7 +54,7 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
                   {/* Read time */}
                   <div className="absolute bottom-4 left-4 flex items-center text-white text-sm">
                     <Clock className="h-3 w-3 mr-1" />
-                    {result.readTime || "5 min read"}
+                    {calculateReadingTime(result.content)}
                   </div>
                 </div>
 
@@ -95,7 +103,7 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
                     <div className="hidden sm:flex items-center gap-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
-                        <span>{result.views || "1.2k"}</span>
+                        <span>{result.views}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Heart className="h-3 w-3" />
@@ -162,11 +170,11 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      <span>5 min read</span>
+                      <span>{calculateReadingTime(result.detailedReport)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Eye className="h-3 w-3" />
-                      <span>1.5k views</span>
+                      <span>{result.views} views</span>
                     </div>
                   </div>
 

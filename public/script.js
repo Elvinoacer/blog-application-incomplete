@@ -497,14 +497,11 @@ class VisitorTracker {
   // Override this with your actual analytics implementation
   sendToAnalytics(data) {
     console.log("Analytics event:", data);
-    /*
-    // Example implementation:
     fetch('/api/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    */
   }
 }
 
