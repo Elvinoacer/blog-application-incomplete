@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { messaging } from '@/lib/firebaseAdmin';
 
 export async function POST(req: NextRequest) {
-  const { title, body } = await req.json();
+  const { title, body, imageUrl } = await req.json();
 
   if (!title || !body) {
     return NextResponse.json({ error: 'Title and body are required' }, { status: 400 });
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const message = {
-      notification: { title, body },
+      notification: { title, body, imageUrl },
       tokens: tokens.map(t => t.token),
     };
 

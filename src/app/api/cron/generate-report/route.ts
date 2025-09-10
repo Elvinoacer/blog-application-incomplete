@@ -47,6 +47,21 @@ export async function GET() {
           await sendEmail(subscriber.email, emailSubject, emailHtml);
         }
       }
+
+      // Send push notification
+      const notificationTitle = `New Post: ${newBlog.topic}`;
+      const notificationBody = newBlog.detailedReport.split('\n')[0];
+      const notificationImageUrl = newBlog.images[0]?.url;
+
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-notification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: notificationTitle,
+          body: notificationBody,
+          imageUrl: notificationImageUrl,
+        }),
+      });
     }
 
     // Return a success response.
