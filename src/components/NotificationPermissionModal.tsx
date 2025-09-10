@@ -15,16 +15,14 @@ export default function NotificationPermissionModal() {
     }
   }, []);
 
-  const handleAllow = async () => {
-    console.log('handleAllow called');
+  const requestNotificationPermission = async () => {
+    console.log('requestNotificationPermission called');
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       setStatus('Push notifications not supported');
       return;
     }
 
     try {
-      await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      console.log('Service worker registered');
       const permission = await Notification.requestPermission();
       console.log('Notification permission:', permission);
       if (permission !== 'granted') {
@@ -62,6 +60,11 @@ export default function NotificationPermissionModal() {
     }
   };
 
+  const handleAllow = async () => {
+    console.log('handleAllow called');
+    await requestNotificationPermission();
+  };
+
   const handleCancel = () => {
     setShowModal(false);
   };
@@ -83,10 +86,10 @@ export default function NotificationPermissionModal() {
             Cancel
           </button>
           <button
-            onClick={handleAllow}
+            onClick={requestNotificationPermission}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
-            Allow
+            Enable Notifications
           </button>
         </div>
         {status && <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">{status}</p>}
