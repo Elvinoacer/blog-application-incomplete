@@ -10,44 +10,38 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
   if (articles.length === 0) return <NoSearchResults />;
 
   return (
-    <div className="grid grid-cols-2 gap-8 lg:grid-cols-3">
+    <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-1">
       {articles.map((result) => {
         if (result.type === 'article') {
           return (
             <Card
               onClick={() => window.open(`/articles/${result.id}`, '_self')}
               key={result.id}
-              className="group relative overflow-hidden transition-all hover:shadow-lg"
+              className="group overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl dark:bg-gray-800 md:flex"
             >
-              <div className="p-6">
-                {/* Image Container */}
-                <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
+              <div className="md:flex-shrink-0">
+                <div className="relative h-48 w-full md:w-64">
                   <Image
                     src={result.featuredImage as string}
                     alt={result.title}
-                    fill
-                    className="object-cover"
+                    layout="fill"
+                    objectFit="cover"
                   />
                 </div>
-                {/* Article Content */}
-                <h3 className="text-xl font-semibold text-foreground">
-                  {result.title}
-                </h3>
-                <p className="mt-2 text-muted-foreground">{result.category}</p>
-
-                {/* Author & Metadata */}
-                <div className="mt-6 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
+              </div>
+              <div className="p-8">
+                <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">{result.category}</div>
+                <h3 className="mt-1 block text-2xl font-bold leading-tight text-black dark:text-white">{result.title}</h3>
+                <div className="mt-6 flex items-center">
+                  <div className="flex-shrink-0">
+                    <Avatar className="h-10 w-10">
                       <AvatarImage src={result.author.imageUrl as string} />
                       <AvatarFallback>{result.author.name}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-muted-foreground">
-                      {result.author.name}
-                    </span>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(result.createdAt).toDateString()}
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{result.author.name}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{new Date(result.createdAt).toDateString()}</div>
                   </div>
                 </div>
               </div>
@@ -58,30 +52,22 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
             <Card
               onClick={() => window.open(`/autoblogs/${result.id}`, '_self')}
               key={result.id}
-              className="group relative overflow-hidden transition-all hover:shadow-lg"
+              className="group overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl dark:bg-gray-800 md:flex"
             >
-              <div className="p-6">
-                {/* Image Container */}
-                <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
+              <div className="md:flex-shrink-0">
+                <div className="relative h-48 w-full md:w-64">
                   <Image
                     src={(result.images as any)[0].url as string}
                     alt={result.topic}
-                    fill
-                    className="object-cover"
+                    layout="fill"
+                    objectFit="cover"
                   />
                 </div>
-                {/* Autoblog Content */}
-                <h3 className="text-xl font-semibold text-foreground">
-                  {result.topic}
-                </h3>
-                <p className="mt-2 text-muted-foreground">Autoblog</p>
-
-                {/* Metadata */}
-                <div className="mt-6 flex items-center justify-between">
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(result.createdAt).toDateString()}
-                  </div>
-                </div>
+              </div>
+              <div className="p-8">
+                <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">Autoblog</div>
+                <h3 className="mt-1 block text-2xl font-bold leading-tight text-black dark:text-white">{result.topic}</h3>
+                <p className="mt-4 text-base text-gray-500 dark:text-gray-300">Read more &rarr;</p>
               </div>
             </Card>
           );
