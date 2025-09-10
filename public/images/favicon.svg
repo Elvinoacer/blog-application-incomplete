@@ -1,0 +1,9 @@
+<svg width="200" height="50" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgb(147,51,234);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgb(79,70,229);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <text x="10" y="40" font-family="Arial, sans-serif" font-size="30" fill="url(#grad1)" font-weight="bold">Thecontemporary</text>
+</svg>

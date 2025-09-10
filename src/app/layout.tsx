@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   title: "Thecontemporary",
   description: "Insightful articles on the latest in technology, programming, and software development.",
   icons: {
-    icon: "/images/favicon.ico",
+    icon: "/images/favicon.svg",
   },
 };
 
