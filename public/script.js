@@ -425,7 +425,7 @@ class VisitorTracker {
     });
   }
 
-  trackPageView() {
+  trackPageView(data = {}) {
     const now = new Date();
     const pageData = {
       url: window.location.href,
@@ -451,6 +451,7 @@ class VisitorTracker {
       type: "page_view",
       ...pageData,
       visitorId: this.visitorData.id,
+      ...data,
     });
   }
 
@@ -512,4 +513,19 @@ document.addEventListener("DOMContentLoaded", () => {
     trackPageViews: true,
     trackCountry: true,
   });
+
+  const url = window.location.href;
+  let match;
+
+  if (url.includes("/articles/")) {
+    match = url.match(/\/articles\/([^/]+)/);
+    if (match) {
+      tracker.trackPageView({ articleId: match[1] });
+    }
+  } else if (url.includes("/autoblogs/")) {
+    match = url.match(/\/autoblogs\/([^/]+)/);
+    if (match) {
+      tracker.trackPageView({ autoblogId: match[1] });
+    }
+  }
 });
