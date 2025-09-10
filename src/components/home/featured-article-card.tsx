@@ -1,3 +1,4 @@
+
 "use client";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,12 +8,16 @@ interface FeaturedArticleCardProps {
   id: string;
   topic: string;
   imageUrl: string | null;
+  description: string;
+  content: any;
 }
 
 const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
   id,
   topic,
   imageUrl,
+  description,
+  content,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -28,14 +33,32 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
     setImageError(true);
   };
 
+  const calculateReadingTime = (text: string) => {
+    const wordsPerMinute = 200;
+    const noWords = text.split(/\s/g).length;
+    const minutes = noWords / wordsPerMinute;
+    const readTime = Math.ceil(minutes);
+    return `${readTime} min read`;
+  };
+
+  const stripHtml = (html: string) => {
+    if (!isMounted) return "";
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
+
   return (
     <Link
       href={`/autoblogs/${id}`}
       className="group block overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl dark:bg-gray-800 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
     >
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col">
+        {" "}
+        {/* Changed to flex-col */}
         {/* Image Container */}
-        <div className="relative h-48 w-full overflow-hidden md:h-auto md:w-64 md:flex-shrink-0">
+        <div className="relative h-48 w-full overflow-hidden md:h-64">
+          {" "}
+          {/* Adjusted for vertical layout */}
           <Image
             src={imageError ? fallbackImage : imageUrl || fallbackImage}
             alt={topic}
@@ -44,21 +67,17 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
             onError={handleImageError}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-
           {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:bg-gradient-to-r" />
-
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           {/* Category badge */}
           <div className="absolute top-4 left-4 rounded-full bg-indigo-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
             Autoblog
           </div>
-
-          {/* Read time indicator (optional) */}
+          {/* Read time indicator */}
           <div className="absolute bottom-4 right-4 rounded-full bg-black/70 px-2 py-1 text-xs text-white backdrop-blur-sm">
-            5 min read
+            {calculateReadingTime(stripHtml(JSON.stringify(content)))}
           </div>
         </div>
-
         {/* Content Container */}
         <div className="flex flex-1 flex-col justify-between p-6 md:p-8">
           <div>
@@ -66,10 +85,8 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
               {topic}
             </h3>
 
-            {/* Excerpt placeholder - you might want to add an excerpt prop later */}
             <p className="mt-3 text-gray-600 dark:text-gray-300 line-clamp-3">
-              Discover insights and perspectives on this trending topic.
-              Continue reading to explore more about this subject.
+              {stripHtml(description)}
             </p>
           </div>
 
@@ -86,7 +103,7 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
                 </svg>
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                Author Name
+                Elvin Juma
               </span>
             </div>
 
@@ -124,3 +141,4 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
 };
 
 export default FeaturedArticleCard;
+

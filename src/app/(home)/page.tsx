@@ -11,6 +11,8 @@ interface Autoblog {
   images: { url: string; description: string }[];
   createdAt: string;
   updatedAt: string;
+  detailedReport: string;
+  content: any;
 }
 
 // Async component to fetch and render featured autoblogs
@@ -50,6 +52,8 @@ async function FeaturedAutoblogs() {
             imageUrl={
               blog.images && blog.images.length > 0 ? blog.images[0].url : null
             }
+            description={blog.detailedReport.substring(0, 100)}
+            content={blog.detailedReport}
           />
         ))}
       </div>
