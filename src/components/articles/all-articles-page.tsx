@@ -10,7 +10,7 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
   if (articles.length === 0) return <NoSearchResults />;
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-8 lg:grid-cols-3">
       {articles.map((result) => {
         if (result.type === 'article') {
           return (
@@ -64,7 +64,7 @@ export function AllArticlesPage({ articles }: { articles: any[] }) {
                 {/* Image Container */}
                 <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
                   <Image
-                    src={(result.images as any)[0] as string}
+                    src={(result.images as any)[0].url as string}
                     alt={result.topic}
                     fill
                     className="object-cover"
