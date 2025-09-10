@@ -12,7 +12,7 @@ const HeroSection = () => {
       <div className="container relative mx-auto flex h-full flex-col items-center justify-center px-4 py-24 md:flex-row md:py-32">
         {/* Content */}
         <div className="flex-1 space-y-8 text-center md:text-left">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             Explore the World Through
             <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
               {" "}
@@ -25,14 +25,14 @@ const HeroSection = () => {
             perspectives on technology, lifestyle, and innovation.
           </p>
 
-          <div className="flex flex-col items-center gap-4 sm:flex-row md:justify-start">
-            <Button size="lg" className="rounded-full px-8 py-6 text-lg">
+          <div className="flex flex-row items-center justify-center gap-4 md:justify-start">
+            <Button size="md" className="rounded-full px-6 py-4 text-base">
               Start Reading
             </Button>
             <Button
               variant="outline"
-              size="lg"
-              className="rounded-full px-8 py-6 text-lg dark:text-white"
+              size="md"
+              className="rounded-full px-6 py-4 text-base dark:text-white"
             >
               Explore Topics
             </Button>

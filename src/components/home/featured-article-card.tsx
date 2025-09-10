@@ -12,18 +12,22 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({ id, topic, im
 
   return (
     <Link href={`/autoblogs/${id}`} className="group block overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl dark:bg-gray-800">
-      <div className="relative h-48 w-full">
-        <Image
-          src={imageUrl || fallbackImage}
-          alt={topic}
-          layout="fill"
-          objectFit="cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-      </div>
-      <div className="p-6">
-        <h3 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">{topic}</h3>
-        <p className="mt-2 text-sm font-medium text-gray-600 dark:text-gray-400">Autoblog</p>
+      <div className="md:flex">
+        <div className="md:flex-shrink-0">
+          <div className="relative h-48 w-full md:w-64">
+            <Image
+              src={imageUrl || fallbackImage}
+              alt={topic}
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+        </div>
+        <div className="p-8">
+          <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">Autoblog</div>
+          <h3 className="mt-1 block text-2xl font-bold leading-tight text-black dark:text-white">{topic}</h3>
+          <p className="mt-4 text-base text-gray-500 dark:text-gray-300">Read more &rarr;</p>
+        </div>
       </div>
     </Link>
   );
