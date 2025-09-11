@@ -60,6 +60,7 @@ export async function GET() {
           title: notificationTitle,
           body: notificationBody,
           imageUrl: notificationImageUrl,
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/autoblogs/${newBlog.id}`
         }),
       });
     }

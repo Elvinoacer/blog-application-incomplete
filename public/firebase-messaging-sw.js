@@ -1,4 +1,3 @@
-
 // Import the Firebase app and messaging compat scripts
 importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js');
@@ -26,8 +25,19 @@ messaging.onBackgroundMessage(function(payload) {
   const notificationOptions = {
     body: payload.notification.body,
     icon: '/firebase-logo.png',
-    image: payload.notification.imageUrl
+    image: payload.notification.imageUrl,
+    data: payload.data
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(
+      clients.openWindow(event.notification.data.url)
+    );
+  }
 });
